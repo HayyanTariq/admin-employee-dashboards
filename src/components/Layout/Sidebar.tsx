@@ -99,9 +99,9 @@ export const Sidebar = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 pt-16">
+    <div className="hidden lg:flex lg:w-64 xl:w-72 lg:flex-col lg:fixed lg:inset-y-0 pt-16">
       <div className="flex flex-col flex-grow bg-card border-r overflow-y-auto">
-        <div className="flex-1 px-4 py-6 space-y-1">
+        <div className="flex-1 px-4 xl:px-6 py-6 space-y-1">
           <div className="mb-6">
             <div className="flex items-center space-x-3 px-3 py-2">
               <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${

@@ -19,7 +19,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       <Header />
       <div className="flex">
         <Sidebar />
-        <main className="flex-1 lg:ml-64">
+        <main className="flex-1 lg:ml-64 xl:ml-72 min-h-[calc(100vh-4rem)]">
           {children}
         </main>
       </div>
