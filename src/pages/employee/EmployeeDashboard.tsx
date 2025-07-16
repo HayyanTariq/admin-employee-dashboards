@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTraining } from '@/contexts/TrainingContext';
 import { Button } from '@/components/ui/button';
 import { StatsCard } from '@/components/Dashboard/StatsCard';
 import { TrainingList } from '@/components/Dashboard/TrainingList';
@@ -16,66 +17,49 @@ import {
 } from 'lucide-react';
 import { Training, TrainingFormData } from '@/types/training';
 
-// Mock data for employee's trainings
-const mockEmployeeTrainings: Training[] = [
-  {
-    id: '1',
-    type: 'certification',
-    employeeName: 'John Doe',
-    role: 'Software Engineer',
-    department: 'Engineering',
-    category: 'Technical',
-    status: 'completed',
-    certificationName: 'React Professional Certification',
-    issuingOrganization: 'Meta',
-    issueDate: '2024-01-15',
-    description: 'Advanced React development certification',
-    skillsLearned: ['React', 'Redux', 'TypeScript'],
-    level: 'advanced',
-    createdAt: '2024-01-15T10:00:00Z',
-    updatedAt: '2024-01-15T10:00:00Z'
-  } as Training,
-  {
-    id: '2',
-    type: 'course',
-    employeeName: 'John Doe',
-    role: 'Software Engineer',
-    department: 'Engineering',
-    category: 'Technical',
-    status: 'in-progress',
-    courseTitle: 'Advanced Node.js Development',
-    platform: 'Udemy',
-    startDate: '2024-01-10',
-    courseDuration: '12 hours',
-    courseDescription: 'Deep dive into Node.js backend development',
-    skillsLearned: ['Node.js', 'Express', 'MongoDB'],
-    createdAt: '2024-01-10T09:00:00Z',
-    updatedAt: '2024-01-10T09:00:00Z'
-  } as Training,
-];
-
 export const EmployeeDashboard = () => {
   const { user } = useAuth();
+  const { trainings, addTraining, updateTraining, deleteTraining } = useTraining();
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingTraining, setEditingTraining] = useState<Training | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const stats = {
-    myTrainings: mockEmployeeTrainings.length,
-    completedTrainings: mockEmployeeTrainings.filter(t => t.status === 'completed').length,
-    inProgressTrainings: mockEmployeeTrainings.filter(t => t.status === 'in-progress').length,
-    certificates: mockEmployeeTrainings.filter(t => t.type === 'certification').length,
+    myTrainings: trainings.length,
+    completedTrainings: trainings.filter(t => t.status === 'completed').length,
+    inProgressTrainings: trainings.filter(t => t.status === 'in-progress').length,
+    certificates: trainings.filter(t => t.type === 'certification').length,
   };
 
   const handleAddTraining = async (data: TrainingFormData) => {
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('New training data:', data);
-      // In real app, this would make an API call to your ASP.NET backend
+      if (editingTraining) {
+        await updateTraining(editingTraining.id, data);
+        setEditingTraining(null);
+      } else {
+        await addTraining(data);
+      }
+      setIsFormOpen(false);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleEditTraining = (training: Training) => {
+    setEditingTraining(training);
+    setIsFormOpen(true);
+  };
+
+  const handleDeleteTraining = async (training: Training) => {
+    if (window.confirm('Are you sure you want to delete this training?')) {
+      await deleteTraining(training.id);
+    }
+  };
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setEditingTraining(null);
   };
 
   return (
@@ -131,11 +115,12 @@ export const EmployeeDashboard = () => {
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <TrainingList
-            trainings={mockEmployeeTrainings}
+            trainings={trainings.slice(0, 5)}
             title="My Recent Trainings"
             showActions={true}
             onView={(training) => console.log('View training:', training)}
-            onEdit={(training) => console.log('Edit training:', training)}
+            onEdit={handleEditTraining}
+            onDelete={handleDeleteTraining}
           />
         </div>
         
@@ -211,9 +196,18 @@ export const EmployeeDashboard = () => {
 
       <TrainingFormSlideout
         isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
+        onClose={handleCloseForm}
         onSubmit={handleAddTraining}
         isLoading={isLoading}
+        initialData={editingTraining ? {
+          employeeName: editingTraining.employeeName,
+          role: editingTraining.role,
+          department: editingTraining.department,
+          category: editingTraining.category,
+          status: editingTraining.status,
+          type: editingTraining.type,
+          ...editingTraining
+        } : undefined}
       />
     </div>
   );
