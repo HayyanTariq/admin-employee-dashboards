@@ -227,4 +227,25 @@
     opacity: 0;
     transition: transform 0.3s ease-in, opacity 0.3s ease-in;
   }
+
+  /* Font Size Classes */
+  .text-small {
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.25rem; /* 20px */
+  }
+
+  .text-medium {
+    font-size: 1rem; /* 16px */
+    line-height: 1.5rem; /* 24px */
+  }
+
+  .text-large {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.75rem; /* 28px */
+  }
+
+  .text-extra-large {
+    font-size: 1.25rem; /* 20px */
+    line-height: 1.875rem; /* 30px */
+  }
 }
