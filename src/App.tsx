@@ -12,6 +12,8 @@ import { LoginForm } from "@/components/LoginForm";
 import { AppLayout } from "@/components/Layout/AppLayout";
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
 import { UserManagement } from "@/pages/admin/UserManagement";
+import { AllTrainings } from "@/pages/admin/AllTrainings";
+import { Reports } from "@/pages/admin/Reports";
 import { EmployeeDashboard } from "@/pages/employee/EmployeeDashboard";
 import { MyTraining } from "@/pages/employee/MyTraining";
 import { MyCertificates } from "@/pages/employee/MyCertificates";
@@ -21,8 +23,8 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuth();
+const ProtectedRoute: React.FC<{ children: React.ReactNode; adminOnly?: boolean }> = ({ children, adminOnly = false }) => {
+  const { isAuthenticated, isLoading, user } = useAuth();
 
   if (isLoading) {
     return (
@@ -34,6 +36,10 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   if (!isAuthenticated) {
     return <LoginForm />;
+  }
+
+  if (adminOnly && user?.role !== 'admin') {
+    return <Navigate to="/employee/dashboard" replace />;
   }
 
   return <AppLayout>{children}</AppLayout>;
@@ -57,7 +63,7 @@ const AppRoutes = () => (
     <Route 
       path="/admin/dashboard" 
       element={
-        <ProtectedRoute>
+        <ProtectedRoute adminOnly={true}>
           <AdminDashboard />
         </ProtectedRoute>
       } 
@@ -65,8 +71,24 @@ const AppRoutes = () => (
     <Route 
       path="/admin/users" 
       element={
-        <ProtectedRoute>
+        <ProtectedRoute adminOnly={true}>
           <UserManagement />
+        </ProtectedRoute>
+      } 
+    />
+    <Route 
+      path="/admin/trainings" 
+      element={
+        <ProtectedRoute adminOnly={true}>
+          <AllTrainings />
+        </ProtectedRoute>
+      } 
+    />
+    <Route 
+      path="/admin/reports" 
+      element={
+        <ProtectedRoute adminOnly={true}>
+          <Reports />
         </ProtectedRoute>
       } 
     />
