@@ -98,7 +98,10 @@ export const TrainingList: React.FC<TrainingListProps> = ({
                     'p-4 hover:bg-muted/50 transition-colors cursor-pointer',
                     !isLast && 'border-b'
                   )}
-                  onClick={() => onView?.(training)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onView?.(training);
+                  }}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4 flex-1">

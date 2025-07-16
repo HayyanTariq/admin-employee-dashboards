@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrainingFormSlideout } from '@/components/TrainingForm/TrainingFormSlideout';
+import { TrainingViewModal } from '@/components/Training/TrainingViewModal';
 import { CertificationTraining, TrainingFormData } from '@/types/training';
 import { 
   Plus, 
@@ -28,6 +29,7 @@ export const MyCertificates = () => {
   const { getCertifications, addTraining, updateTraining, deleteTraining } = useTraining();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingCertificate, setEditingCertificate] = useState<CertificationTraining | null>(null);
+  const [viewingTraining, setViewingTraining] = useState<CertificationTraining | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -181,7 +183,13 @@ export const MyCertificates = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="pl-9"
-        />
+      />
+      
+      <TrainingViewModal
+        training={viewingTraining}
+        isOpen={!!viewingTraining}
+        onClose={() => setViewingTraining(null)}
+      />
       </div>
 
       {/* Certificates Grid */}
@@ -264,7 +272,7 @@ export const MyCertificates = () => {
 
               <CardFooter className="flex items-center justify-between">
                 <div className="flex space-x-2">
-                  <Button size="sm" variant="outline" onClick={() => console.log('View', certificate)}>
+                  <Button size="sm" variant="outline" onClick={() => setViewingTraining(certificate)}>
                     <Eye className="mr-1 h-3 w-3" />
                     View
                   </Button>

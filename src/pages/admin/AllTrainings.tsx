@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTraining } from '@/contexts/TrainingContext';
 import { TrainingList } from '@/components/Dashboard/TrainingList';
+import { TrainingViewModal } from '@/components/Training/TrainingViewModal';
 import { TrainingFormSlideout } from '@/components/TrainingForm/TrainingFormSlideout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,6 +15,7 @@ export const AllTrainings = () => {
   const { toast } = useToast();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTraining, setEditingTraining] = useState(null);
+  const [viewingTraining, setViewingTraining] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
@@ -106,7 +108,13 @@ export const AllTrainings = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
-          />
+      />
+      
+      <TrainingViewModal
+        training={viewingTraining}
+        isOpen={!!viewingTraining}
+        onClose={() => setViewingTraining(null)}
+      />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-full sm:w-48">
@@ -141,7 +149,7 @@ export const AllTrainings = () => {
         <TrainingList
           trainings={filteredTrainings}
           title={`Training Records (${filteredTrainings.length})`}
-          onView={(training) => console.log('View training:', training)}
+          onView={setViewingTraining}
           onEdit={handleEdit}
           onDelete={handleDelete}
           showActions={true}

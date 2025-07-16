@@ -4,6 +4,7 @@ import { useTraining } from '@/contexts/TrainingContext';
 import { Button } from '@/components/ui/button';
 import { StatsCard } from '@/components/Dashboard/StatsCard';
 import { TrainingList } from '@/components/Dashboard/TrainingList';
+import { TrainingViewModal } from '@/components/Training/TrainingViewModal';
 import { TrainingFormSlideout } from '@/components/TrainingForm/TrainingFormSlideout';
 import { 
   Award, 
@@ -22,6 +23,7 @@ export const EmployeeDashboard = () => {
   const { trainings, addTraining, updateTraining, deleteTraining } = useTraining();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTraining, setEditingTraining] = useState<Training | null>(null);
+  const [viewingTraining, setViewingTraining] = useState<Training | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const stats = {
@@ -118,7 +120,7 @@ export const EmployeeDashboard = () => {
             trainings={trainings.slice(0, 5)}
             title="My Recent Trainings"
             showActions={true}
-            onView={(training) => console.log('View training:', training)}
+            onView={setViewingTraining}
             onEdit={handleEditTraining}
             onDelete={handleDeleteTraining}
           />
@@ -138,8 +140,16 @@ export const EmployeeDashboard = () => {
               <div className="w-full bg-muted rounded-full h-2">
                 <div className="bg-success h-2 rounded-full" style={{ width: '60%' }}></div>
               </div>
-              
-              <div className="flex items-center justify-between mt-4">
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-r from-warning/10 to-warning/5 rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <Target className="mr-2 h-5 w-5" />
+              Certifications Goal
+            </h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
                 <span className="text-sm">Earn 3 certificates</span>
                 <span className="text-sm font-medium text-success">1/3</span>
               </div>
@@ -208,6 +218,12 @@ export const EmployeeDashboard = () => {
           type: editingTraining.type,
           ...editingTraining
         } : undefined}
+      />
+      
+      <TrainingViewModal
+        training={viewingTraining}
+        isOpen={!!viewingTraining}
+        onClose={() => setViewingTraining(null)}
       />
     </div>
   );

@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTraining } from '@/contexts/TrainingContext';
 import { Button } from '@/components/ui/button';
 import { TrainingList } from '@/components/Dashboard/TrainingList';
+import { TrainingViewModal } from '@/components/Training/TrainingViewModal';
 import { TrainingFormSlideout } from '@/components/TrainingForm/TrainingFormSlideout';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -15,6 +16,7 @@ export const MyTraining = () => {
   const { trainings, addTraining, updateTraining, deleteTraining } = useTraining();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTraining, setEditingTraining] = useState<Training | null>(null);
+  const [viewingTraining, setViewingTraining] = useState<Training | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -159,7 +161,7 @@ export const MyTraining = () => {
         trainings={filteredTrainings}
         title={`Training Records (${filteredTrainings.length})`}
         showActions={true}
-        onView={(training) => console.log('View training:', training)}
+        onView={setViewingTraining}
         onEdit={handleEditTraining}
         onDelete={handleDeleteTraining}
       />
@@ -178,6 +180,12 @@ export const MyTraining = () => {
           type: editingTraining.type,
           ...editingTraining
         } : undefined}
+      />
+      
+      <TrainingViewModal
+        training={viewingTraining}
+        isOpen={!!viewingTraining}
+        onClose={() => setViewingTraining(null)}
       />
     </div>
   );
