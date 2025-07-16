@@ -28,19 +28,13 @@ const adminNavItems = [
     title: 'All Trainings',
     href: '/admin/trainings',
     icon: List,
-    description: 'View all certifications'
+    description: 'View and manage trainings'
   },
   {
     title: 'User Management',
     href: '/admin/users',
     icon: Users,
     description: 'Manage employees'
-  },
-  {
-    title: 'Add Training',
-    href: '/admin/add-training',
-    icon: Plus,
-    description: 'Create new training entry'
   },
   {
     title: 'Reports',
