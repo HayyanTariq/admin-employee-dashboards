@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTraining } from '@/contexts/TrainingContext';
 import { Button } from '@/components/ui/button';
 import { TrainingList } from '@/components/Dashboard/TrainingList';
 import { TrainingFormSlideout } from '@/components/TrainingForm/TrainingFormSlideout';
@@ -9,81 +10,11 @@ import { Badge } from '@/components/ui/badge';
 import { Training, TrainingFormData } from '@/types/training';
 import { Plus, Search, Filter, BookOpen, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 
-// Mock data for employee's trainings
-const mockEmployeeTrainings: Training[] = [
-  {
-    id: '1',
-    type: 'certification',
-    employeeName: 'John Doe',
-    role: 'Software Engineer',
-    department: 'Engineering',
-    category: 'Technical',
-    status: 'completed',
-    certificationName: 'React Professional Certification',
-    issuingOrganization: 'Meta',
-    issueDate: '2024-01-15',
-    description: 'Advanced React development certification',
-    skillsLearned: ['React', 'Redux', 'TypeScript'],
-    level: 'advanced',
-    createdAt: '2024-01-15T10:00:00Z',
-    updatedAt: '2024-01-15T10:00:00Z'
-  } as Training,
-  {
-    id: '2',
-    type: 'course',
-    employeeName: 'John Doe',
-    role: 'Software Engineer',
-    department: 'Engineering',
-    category: 'Technical',
-    status: 'in-progress',
-    courseTitle: 'Advanced Node.js Development',
-    platform: 'Udemy',
-    startDate: '2024-01-10',
-    courseDuration: '12 hours',
-    courseDescription: 'Deep dive into Node.js backend development',
-    skillsLearned: ['Node.js', 'Express', 'MongoDB'],
-    createdAt: '2024-01-10T09:00:00Z',
-    updatedAt: '2024-01-10T09:00:00Z'
-  } as Training,
-  {
-    id: '3',
-    type: 'session',
-    employeeName: 'John Doe',
-    role: 'Software Engineer',
-    department: 'Engineering',
-    category: 'Soft Skills',
-    status: 'completed',
-    instructorName: 'Sarah Wilson',
-    sessionTopic: 'Effective Communication in Teams',
-    sessionDate: '2024-01-08',
-    startTime: '09:00',
-    endTime: '11:00',
-    duration: '2 hours',
-    location: 'on-site',
-    agenda: 'Communication styles, active listening, conflict resolution',
-    learnedOutcome: 'Improved team communication skills',
-    createdAt: '2024-01-08T09:00:00Z',
-    updatedAt: '2024-01-08T09:00:00Z'
-  } as Training,
-];
-
-const statusColors = {
-  'completed': 'secondary',
-  'in-progress': 'outline',
-  'scheduled': 'default',
-  'pending': 'destructive'
-} as const;
-
-const statusIcons = {
-  'completed': CheckCircle,
-  'in-progress': Clock,
-  'scheduled': BookOpen,
-  'pending': AlertCircle
-};
-
 export const MyTraining = () => {
   const { user } = useAuth();
+  const { trainings, addTraining, updateTraining, deleteTraining } = useTraining();
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingTraining, setEditingTraining] = useState<Training | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -92,15 +23,35 @@ export const MyTraining = () => {
   const handleAddTraining = async (data: TrainingFormData) => {
     setIsLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('New training data:', data);
-      // In real app, this would make an API call to your ASP.NET backend
+      if (editingTraining) {
+        await updateTraining(editingTraining.id, data);
+        setEditingTraining(null);
+      } else {
+        await addTraining(data);
+      }
+      setIsFormOpen(false);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const filteredTrainings = mockEmployeeTrainings.filter(training => {
+  const handleEditTraining = (training: Training) => {
+    setEditingTraining(training);
+    setIsFormOpen(true);
+  };
+
+  const handleDeleteTraining = async (training: Training) => {
+    if (window.confirm('Are you sure you want to delete this training?')) {
+      await deleteTraining(training.id);
+    }
+  };
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setEditingTraining(null);
+  };
+
+  const filteredTrainings = trainings.filter(training => {
     const matchesSearch = training.type === 'certification' 
       ? training.certificationName?.toLowerCase().includes(searchTerm.toLowerCase())
       : training.type === 'course'
@@ -112,6 +63,20 @@ export const MyTraining = () => {
     
     return matchesSearch && matchesStatus && matchesCategory;
   });
+
+  const statusColors = {
+    'completed': 'secondary',
+    'in-progress': 'outline',
+    'scheduled': 'default',
+    'pending': 'destructive'
+  } as const;
+
+  const statusIcons = {
+    'completed': CheckCircle,
+    'in-progress': Clock,
+    'scheduled': BookOpen,
+    'pending': AlertCircle
+  };
 
   return (
     <div className="flex-1 space-y-6 p-6">
@@ -131,7 +96,7 @@ export const MyTraining = () => {
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-4">
         {Object.entries(statusColors).map(([status, variant]) => {
-          const count = mockEmployeeTrainings.filter(t => t.status === status).length;
+          const count = trainings.filter(t => t.status === status).length;
           const Icon = statusIcons[status as keyof typeof statusIcons];
           
           return (
@@ -195,14 +160,24 @@ export const MyTraining = () => {
         title={`Training Records (${filteredTrainings.length})`}
         showActions={true}
         onView={(training) => console.log('View training:', training)}
-        onEdit={(training) => console.log('Edit training:', training)}
+        onEdit={handleEditTraining}
+        onDelete={handleDeleteTraining}
       />
 
       <TrainingFormSlideout
         isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
+        onClose={handleCloseForm}
         onSubmit={handleAddTraining}
         isLoading={isLoading}
+        initialData={editingTraining ? {
+          employeeName: editingTraining.employeeName,
+          role: editingTraining.role,
+          department: editingTraining.department,
+          category: editingTraining.category,
+          status: editingTraining.status,
+          type: editingTraining.type,
+          ...editingTraining
+        } : undefined}
       />
     </div>
   );

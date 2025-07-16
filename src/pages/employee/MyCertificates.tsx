@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTraining } from '@/contexts/TrainingContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -18,111 +19,73 @@ import {
   Edit,
   Shield,
   Clock,
-  Star
+  Star,
+  Trash2
 } from 'lucide-react';
-
-// Mock data for employee's certificates
-const mockCertificates: CertificationTraining[] = [
-  {
-    id: '1',
-    type: 'certification',
-    employeeName: 'John Doe',
-    role: 'Software Engineer',
-    department: 'Engineering',
-    category: 'Technical',
-    status: 'completed',
-    certificationName: 'React Professional Certification',
-    issuingOrganization: 'Meta',
-    issueDate: '2024-01-15',
-    description: 'Advanced React development certification covering hooks, context, performance optimization, and best practices.',
-    skillsLearned: ['React', 'Redux', 'TypeScript', 'Testing'],
-    level: 'advanced',
-    credentialId: 'REACT-PRO-2024-001',
-    credentialUrl: 'https://certification.meta.com/verify/REACT-PRO-2024-001',
-    createdAt: '2024-01-15T10:00:00Z',
-    updatedAt: '2024-01-15T10:00:00Z'
-  },
-  {
-    id: '2',
-    type: 'certification',
-    employeeName: 'John Doe',
-    role: 'Software Engineer',
-    department: 'Engineering',
-    category: 'Technical',
-    status: 'completed',
-    certificationName: 'AWS Certified Developer',
-    issuingOrganization: 'Amazon Web Services',
-    issueDate: '2023-11-20',
-    expirationDate: '2026-11-20',
-    description: 'Certified AWS Developer with expertise in cloud services, Lambda, and serverless architecture.',
-    skillsLearned: ['AWS', 'Lambda', 'DynamoDB', 'API Gateway'],
-    level: 'intermediate',
-    credentialId: 'AWS-DEV-2023-456',
-    credentialUrl: 'https://aws.amazon.com/verification/AWS-DEV-2023-456',
-    createdAt: '2023-11-20T10:00:00Z',
-    updatedAt: '2023-11-20T10:00:00Z'
-  },
-  {
-    id: '3',
-    type: 'certification',
-    employeeName: 'John Doe',
-    role: 'Software Engineer',
-    department: 'Engineering',
-    category: 'Technical',
-    status: 'completed',
-    certificationName: 'Scrum Master Certification',
-    issuingOrganization: 'Scrum Alliance',
-    issueDate: '2023-08-10',
-    expirationDate: '2025-08-10',
-    description: 'Certified Scrum Master with expertise in Agile methodologies and team facilitation.',
-    skillsLearned: ['Scrum', 'Agile', 'Team Leadership', 'Sprint Planning'],
-    level: 'intermediate',
-    credentialId: 'CSM-2023-789',
-    credentialUrl: 'https://scrumalliance.org/verify/CSM-2023-789',
-    createdAt: '2023-08-10T10:00:00Z',
-    updatedAt: '2023-08-10T10:00:00Z'
-  }
-];
-
-const levelColors = {
-  'beginner': 'outline',
-  'intermediate': 'secondary',
-  'advanced': 'default',
-  'expert': 'destructive'
-} as const;
-
-// Crown icon fallback
-const Crown = Award;
-
-const levelIcons = {
-  'beginner': Star,
-  'intermediate': Shield,
-  'advanced': Award,
-  'expert': Crown
-} as const;
 
 export const MyCertificates = () => {
   const { user } = useAuth();
+  const { getCertifications, addTraining, updateTraining, deleteTraining } = useTraining();
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingCertificate, setEditingCertificate] = useState<CertificationTraining | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const certificates = getCertifications() as CertificationTraining[];
 
   const handleAddCertification = async (data: TrainingFormData) => {
     setIsLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('New certification data:', data);
-      // In real app, this would make an API call to your ASP.NET backend
+      if (editingCertificate) {
+        await updateTraining(editingCertificate.id, data);
+        setEditingCertificate(null);
+      } else {
+        await addTraining(data);
+      }
+      setIsFormOpen(false);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const filteredCertificates = mockCertificates.filter(cert =>
+  const handleEditCertificate = (certificate: CertificationTraining) => {
+    setEditingCertificate(certificate);
+    setIsFormOpen(true);
+  };
+
+  const handleDeleteCertificate = async (certificate: CertificationTraining) => {
+    if (window.confirm('Are you sure you want to delete this certificate?')) {
+      await deleteTraining(certificate.id);
+    }
+  };
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setEditingCertificate(null);
+  };
+
+  const filteredCertificates = certificates.filter(cert =>
     cert.certificationName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     cert.issuingOrganization.toLowerCase().includes(searchTerm.toLowerCase()) ||
     cert.skillsLearned.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  const levelColors = {
+    'beginner': 'outline',
+    'intermediate': 'secondary', 
+    'advanced': 'default',
+    'expert': 'destructive'
+  } as const;
+
+  // Crown icon fallback
+  const Crown = Award;
+
+  const levelIcons = {
+    'beginner': Star,
+    'intermediate': Shield,
+    'advanced': Award,
+    'expert': Crown
+  } as const;
 
   const isExpiringSoon = (expirationDate?: string) => {
     if (!expirationDate) return false;
@@ -162,7 +125,7 @@ export const MyCertificates = () => {
               <span className="text-sm font-medium">Total Certificates</span>
             </div>
             <div className="mt-2">
-              <span className="text-2xl font-bold">{mockCertificates.length}</span>
+              <span className="text-2xl font-bold">{certificates.length}</span>
             </div>
           </CardContent>
         </Card>
@@ -175,7 +138,7 @@ export const MyCertificates = () => {
             </div>
             <div className="mt-2">
               <span className="text-2xl font-bold text-warning">
-                {mockCertificates.filter(cert => isExpiringSoon(cert.expirationDate)).length}
+                {certificates.filter(cert => isExpiringSoon(cert.expirationDate)).length}
               </span>
             </div>
           </CardContent>
@@ -189,7 +152,7 @@ export const MyCertificates = () => {
             </div>
             <div className="mt-2">
               <span className="text-2xl font-bold text-primary">
-                {mockCertificates.filter(cert => !isExpired(cert.expirationDate)).length}
+                {certificates.filter(cert => !isExpired(cert.expirationDate)).length}
               </span>
             </div>
           </CardContent>
@@ -203,7 +166,7 @@ export const MyCertificates = () => {
             </div>
             <div className="mt-2">
               <span className="text-2xl font-bold">
-                {mockCertificates.filter(cert => cert.level === 'expert' || cert.level === 'advanced').length}
+                {certificates.filter(cert => cert.level === 'expert' || cert.level === 'advanced').length}
               </span>
             </div>
           </CardContent>
@@ -301,13 +264,17 @@ export const MyCertificates = () => {
 
               <CardFooter className="flex items-center justify-between">
                 <div className="flex space-x-2">
-                  <Button size="sm" variant="outline">
+                  <Button size="sm" variant="outline" onClick={() => console.log('View', certificate)}>
                     <Eye className="mr-1 h-3 w-3" />
                     View
                   </Button>
-                  <Button size="sm" variant="outline">
+                  <Button size="sm" variant="outline" onClick={() => handleEditCertificate(certificate)}>
                     <Edit className="mr-1 h-3 w-3" />
                     Edit
+                  </Button>
+                  <Button size="sm" variant="destructive" onClick={() => handleDeleteCertificate(certificate)}>
+                    <Trash2 className="mr-1 h-3 w-3" />
+                    Delete
                   </Button>
                 </div>
                 <div className="flex space-x-2">
@@ -348,9 +315,18 @@ export const MyCertificates = () => {
 
       <TrainingFormSlideout
         isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
+        onClose={handleCloseForm}
         onSubmit={handleAddCertification}
         isLoading={isLoading}
+        initialData={editingCertificate ? {
+          employeeName: editingCertificate.employeeName,
+          role: editingCertificate.role,
+          department: editingCertificate.department,
+          category: editingCertificate.category,
+          status: editingCertificate.status,
+          type: 'certification',
+          ...editingCertificate
+        } : { type: 'certification' } as any}
       />
     </div>
   );
