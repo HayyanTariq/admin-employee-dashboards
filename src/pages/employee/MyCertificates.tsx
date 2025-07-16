@@ -326,6 +326,7 @@ export const MyCertificates = () => {
         onClose={handleCloseForm}
         onSubmit={handleAddCertification}
         isLoading={isLoading}
+        fixedType="certification"
         initialData={editingCertificate ? {
           employeeName: editingCertificate.employeeName,
           role: editingCertificate.role,

@@ -64,6 +64,18 @@ const employeeNavItems = [
     description: 'Manage your trainings'
   },
   {
+    title: 'My Sessions',
+    href: '/employee/sessions',
+    icon: Calendar,
+    description: 'Training sessions'
+  },
+  {
+    title: 'My Courses',
+    href: '/employee/courses',
+    icon: GraduationCap,
+    description: 'Online courses'
+  },
+  {
     title: 'My Certificates',
     href: '/employee/certificates',
     icon: Award,
@@ -160,7 +172,7 @@ export const Sidebar = () => {
                 <GraduationCap className="h-4 w-4 text-primary-foreground" />
               </div>
               <div>
-                <p className="text-sm font-medium">Certify One</p>
+                <p className="text-sm font-medium font-serif">Certify One</p>
                 <p className="text-xs text-muted-foreground">Training Platform</p>
               </div>
             </div>

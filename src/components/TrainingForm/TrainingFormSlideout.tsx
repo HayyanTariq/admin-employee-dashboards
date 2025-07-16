@@ -46,6 +46,7 @@ interface TrainingFormSlideoutProps {
   onSubmit: (data: TrainingFormData) => Promise<void>;
   initialData?: TrainingFormData;
   isLoading?: boolean;
+  fixedType?: TrainingType;
 }
 
 const trainingTypes: { value: TrainingType; label: string }[] = [
@@ -79,6 +80,7 @@ export const TrainingFormSlideout: React.FC<TrainingFormSlideoutProps> = ({
   onSubmit,
   initialData,
   isLoading = false,
+  fixedType,
 }) => {
   const [formData, setFormData] = useState<TrainingFormData>({
     employeeName: '',
@@ -116,7 +118,10 @@ export const TrainingFormSlideout: React.FC<TrainingFormSlideoutProps> = ({
       setFormData({ ...formData, ...initialData });
       setSkills(initialData.skillsLearned || []);
     }
-  }, [initialData]);
+    if (fixedType) {
+      setFormData(prev => ({ ...prev, type: fixedType }));
+    }
+  }, [initialData, fixedType]);
 
   const updateFormData = (field: keyof TrainingFormData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -195,7 +200,7 @@ export const TrainingFormSlideout: React.FC<TrainingFormSlideoutProps> = ({
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="employeeName">Employee Name *</Label>
+          <Label htmlFor="employeeName">Name *</Label>
           <Input
             id="employeeName"
             value={formData.employeeName}
@@ -466,7 +471,7 @@ export const TrainingFormSlideout: React.FC<TrainingFormSlideoutProps> = ({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="certificateLink">Certificate Link</Label>
+        <Label htmlFor="certificateLink">Course Link</Label>
         <Input
           id="certificateLink"
           type="url"
@@ -660,20 +665,14 @@ export const TrainingFormSlideout: React.FC<TrainingFormSlideoutProps> = ({
 
   const renderFileUploadSection = () => (
     <div className="space-y-2">
-      <Label htmlFor="certificateFile">Upload Certificate</Label>
-      <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center">
-        <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-        <div className="text-sm text-muted-foreground">
-          <p>Drag and drop your certificate file here, or</p>
-          <Button type="button" variant="outline" size="sm" className="mt-2">
-            <FileText className="mr-2 h-4 w-4" />
-            Choose File
-          </Button>
-        </div>
-        <p className="text-xs text-muted-foreground mt-2">
-          Supported formats: PDF, JPG, PNG (Max 5MB)
-        </p>
-      </div>
+      <Label htmlFor="outcomesLearned">Outcomes Learned</Label>
+      <Textarea
+        id="outcomesLearned"
+        value={formData.outcomesLearned || ''}
+        onChange={(e) => updateFormData('outcomesLearned', e.target.value)}
+        placeholder="Describe the key outcomes and learnings from this course"
+        rows={4}
+      />
     </div>
   );
 
@@ -707,18 +706,26 @@ export const TrainingFormSlideout: React.FC<TrainingFormSlideoutProps> = ({
                   </div>
                   <Label className="text-lg font-semibold">Training Type</Label>
                 </div>
-                <Select value={formData.type} onValueChange={(value) => updateFormData('type', value)}>
-                  <SelectTrigger className="h-12 text-base hover:border-primary/30 transition-colors">
-                    <SelectValue placeholder="Select training type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {trainingTypes.map((type) => (
-                      <SelectItem key={type.value} value={type.value} className="text-base py-3">
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {fixedType ? (
+                  <div className="h-12 bg-muted/50 rounded-md border border-border flex items-center px-3">
+                    <span className="text-base font-medium capitalize">
+                      {trainingTypes.find(t => t.value === fixedType)?.label}
+                    </span>
+                  </div>
+                ) : (
+                  <Select value={formData.type} onValueChange={(value) => updateFormData('type', value)}>
+                    <SelectTrigger className="h-12 text-base hover:border-primary/30 transition-colors">
+                      <SelectValue placeholder="Select training type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {trainingTypes.map((type) => (
+                        <SelectItem key={type.value} value={type.value} className="text-base py-3">
+                          {type.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
             </Card>
 

@@ -4,6 +4,8 @@
 
 /* Certify One Design System - Professional Training Management */
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap');
+
 @layer base {
   :root {
     /* Professional Color Palette */

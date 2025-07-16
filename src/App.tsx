@@ -16,6 +16,8 @@ import { AllTrainings } from "@/pages/admin/AllTrainings";
 import { Reports } from "@/pages/admin/Reports";
 import { EmployeeDashboard } from "@/pages/employee/EmployeeDashboard";
 import { MyTraining } from "@/pages/employee/MyTraining";
+import { MySessions } from "@/pages/employee/MySessions";
+import { MyCourses } from "@/pages/employee/MyCourses";
 import { MyCertificates } from "@/pages/employee/MyCertificates";
 import { Schedule } from "@/pages/employee/Schedule";
 import { Settings } from "@/pages/Settings";
@@ -105,6 +107,22 @@ const AppRoutes = () => (
       element={
         <ProtectedRoute>
           <MyTraining />
+        </ProtectedRoute>
+      } 
+    />
+    <Route 
+      path="/employee/sessions" 
+      element={
+        <ProtectedRoute>
+          <MySessions />
+        </ProtectedRoute>
+      } 
+    />
+    <Route 
+      path="/employee/courses" 
+      element={
+        <ProtectedRoute>
+          <MyCourses />
         </ProtectedRoute>
       } 
     />

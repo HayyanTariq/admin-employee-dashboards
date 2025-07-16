@@ -36,6 +36,7 @@ export interface CourseTraining extends BaseTraining {
   courseDuration: string;
   certificateLink?: string;
   courseDescription: string;
+  outcomesLearned?: string;
   skillsLearned: string[];
   certificateFile?: File;
 }
@@ -84,6 +85,7 @@ export interface TrainingFormData {
   courseDuration?: string;
   certificateLink?: string;
   courseDescription?: string;
+  outcomesLearned?: string;
 
   // Certification fields
   certificationName?: string;
