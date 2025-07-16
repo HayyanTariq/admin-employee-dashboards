@@ -13,12 +13,12 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
@@ -678,75 +678,111 @@ export const TrainingFormSlideout: React.FC<TrainingFormSlideoutProps> = ({
   );
 
   return (
-    <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="w-full sm:max-w-2xl overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle className="flex items-center space-x-2">
-            <div className="h-8 w-8 gradient-primary rounded-lg flex items-center justify-center">
-              <Plus className="h-4 w-4 text-primary-foreground" />
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto animate-scale-in">
+        <DialogHeader className="space-y-4">
+          <DialogTitle className="flex items-center space-x-3 text-2xl">
+            <div className="h-10 w-10 gradient-primary rounded-lg flex items-center justify-center animate-fade-in">
+              <Plus className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span>Add New Training</span>
-          </SheetTitle>
-          <SheetDescription>
-            Fill out the form below to add a new training entry to the system.
-          </SheetDescription>
-        </SheetHeader>
+            <span className="animate-fade-in">
+              {initialData ? 'Edit Training Record' : 'Add New Training'}
+            </span>
+          </DialogTitle>
+          <DialogDescription className="text-muted-foreground animate-fade-in">
+            {initialData 
+              ? 'Update the training information below.'
+              : 'Fill out the form below to add a new training entry to the system.'
+            }
+          </DialogDescription>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6 py-6">
-          <Card className="p-4">
-            <div className="space-y-2 mb-4">
-              <Label htmlFor="type">Training Type *</Label>
-              <Select value={formData.type} onValueChange={(value) => updateFormData('type', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select training type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {trainingTypes.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
-                      {type.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        <div className="animate-fade-in">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <Card className="p-6 border-2 hover:border-primary/20 transition-all duration-300 hover:shadow-lg animate-scale-in">
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2 mb-4">
+                  <div className="h-6 w-6 bg-gradient-to-r from-primary to-primary/60 rounded-full flex items-center justify-center">
+                    <span className="text-xs font-bold text-white">1</span>
+                  </div>
+                  <Label className="text-lg font-semibold">Training Type</Label>
+                </div>
+                <Select value={formData.type} onValueChange={(value) => updateFormData('type', value)}>
+                  <SelectTrigger className="h-12 text-base hover:border-primary/30 transition-colors">
+                    <SelectValue placeholder="Select training type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {trainingTypes.map((type) => (
+                      <SelectItem key={type.value} value={type.value} className="text-base py-3">
+                        {type.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </Card>
+
+            <Card className="p-6 border-2 hover:border-primary/20 transition-all duration-300 hover:shadow-lg animate-scale-in" style={{ animationDelay: '0.1s' }}>
+              <div className="flex items-center space-x-2 mb-6">
+                <div className="h-6 w-6 bg-gradient-to-r from-success to-success/60 rounded-full flex items-center justify-center">
+                  <span className="text-xs font-bold text-white">2</span>
+                </div>
+                <h3 className="text-lg font-semibold">Common Information</h3>
+              </div>
+              {renderCommonFields()}
+            </Card>
+
+            <Card className="p-6 border-2 hover:border-primary/20 transition-all duration-300 hover:shadow-lg animate-scale-in" style={{ animationDelay: '0.2s' }}>
+              <div className="flex items-center space-x-2 mb-6">
+                <div className="h-6 w-6 bg-gradient-to-r from-warning to-warning/60 rounded-full flex items-center justify-center">
+                  <span className="text-xs font-bold text-white">3</span>
+                </div>
+                <h3 className="text-lg font-semibold">
+                  {formData.type === 'session' && 'Session Details'}
+                  {formData.type === 'course' && 'Course Details'}
+                  {formData.type === 'certification' && 'Certification Details'}
+                </h3>
+              </div>
+              <div className="animate-fade-in">
+                {formData.type === 'session' && renderSessionFields()}
+                {formData.type === 'course' && renderCourseFields()}
+                {formData.type === 'certification' && renderCertificationFields()}
+              </div>
+            </Card>
+
+            <div className="flex justify-end space-x-4 pt-6 border-t border-border/50 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={onClose}
+                className="h-12 px-6 hover-scale transition-all duration-200"
+                size="lg"
+              >
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                disabled={isLoading} 
+                variant="gradient"
+                className="h-12 px-8 hover-scale transition-all duration-200 shadow-lg"
+                size="lg"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-5 w-5" />
+                    {initialData ? 'Update Training' : 'Save Training'}
+                  </>
+                )}
+              </Button>
             </div>
-          </Card>
-
-          <Card className="p-4">
-            <h3 className="text-lg font-semibold mb-4">Common Information</h3>
-            {renderCommonFields()}
-          </Card>
-
-          <Card className="p-4">
-            <h3 className="text-lg font-semibold mb-4">
-              {formData.type === 'session' && 'Session Details'}
-              {formData.type === 'course' && 'Course Details'}
-              {formData.type === 'certification' && 'Certification Details'}
-            </h3>
-            {formData.type === 'session' && renderSessionFields()}
-            {formData.type === 'course' && renderCourseFields()}
-            {formData.type === 'certification' && renderCertificationFields()}
-          </Card>
-
-          <div className="flex justify-end space-x-3 pt-4 border-t">
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isLoading} variant="gradient">
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Training
-                </>
-              )}
-            </Button>
-          </div>
-        </form>
-      </SheetContent>
-    </Sheet>
+          </form>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
