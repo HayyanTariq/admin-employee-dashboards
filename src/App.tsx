@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -10,6 +11,7 @@ import { TrainingProvider } from "@/contexts/TrainingContext";
 import { LoginForm } from "@/components/LoginForm";
 import { AppLayout } from "@/components/Layout/AppLayout";
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
+import { UserManagement } from "@/pages/admin/UserManagement";
 import { EmployeeDashboard } from "@/pages/employee/EmployeeDashboard";
 import { MyTraining } from "@/pages/employee/MyTraining";
 import { MyCertificates } from "@/pages/employee/MyCertificates";
@@ -57,6 +59,14 @@ const AppRoutes = () => (
       element={
         <ProtectedRoute>
           <AdminDashboard />
+        </ProtectedRoute>
+      } 
+    />
+    <Route 
+      path="/admin/users" 
+      element={
+        <ProtectedRoute>
+          <UserManagement />
         </ProtectedRoute>
       } 
     />

@@ -1,5 +1,7 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { StatsCard } from '@/components/Dashboard/StatsCard';
 import { TrainingList } from '@/components/Dashboard/TrainingList';
@@ -78,6 +80,7 @@ const mockTrainings: Training[] = [
 
 export const AdminDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -191,11 +194,19 @@ export const AdminDashboard = () => {
                 <Plus className="mr-2 h-4 w-4" />
                 Add New Training
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => navigate('/admin/users')}
+              >
                 <Users className="mr-2 h-4 w-4" />
                 Manage Users
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => navigate('/admin/reports')}
+              >
                 <Award className="mr-2 h-4 w-4" />
                 View Reports
               </Button>
