@@ -10,6 +10,10 @@ import { LoginForm } from "@/components/LoginForm";
 import { AppLayout } from "@/components/Layout/AppLayout";
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
 import { EmployeeDashboard } from "@/pages/employee/EmployeeDashboard";
+import { MyTraining } from "@/pages/employee/MyTraining";
+import { MyCertificates } from "@/pages/employee/MyCertificates";
+import { Schedule } from "@/pages/employee/Schedule";
+import { Settings } from "@/pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -63,7 +67,38 @@ const AppRoutes = () => (
         </ProtectedRoute>
       } 
     />
-    {/* Additional routes will be added here */}
+    <Route 
+      path="/employee/training" 
+      element={
+        <ProtectedRoute>
+          <MyTraining />
+        </ProtectedRoute>
+      } 
+    />
+    <Route 
+      path="/employee/certificates" 
+      element={
+        <ProtectedRoute>
+          <MyCertificates />
+        </ProtectedRoute>
+      } 
+    />
+    <Route 
+      path="/employee/schedule" 
+      element={
+        <ProtectedRoute>
+          <Schedule />
+        </ProtectedRoute>
+      } 
+    />
+    <Route 
+      path="/settings" 
+      element={
+        <ProtectedRoute>
+          <Settings />
+        </ProtectedRoute>
+      } 
+    />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );

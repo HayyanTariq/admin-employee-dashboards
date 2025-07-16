@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-type Theme = 'light' | 'dark';
-type FontSize = 'small' | 'medium' | 'large';
+type Theme = 'light' | 'dark' | 'system';
+type FontSize = 'small' | 'medium' | 'large' | 'extra-large';
 
 interface ThemeContextType {
   theme: Theme;
   fontSize: FontSize;
   toggleTheme: () => void;
+  setTheme: (theme: Theme) => void;
   setFontSize: (size: FontSize) => void;
 }
 
@@ -66,6 +67,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     theme,
     fontSize,
     toggleTheme,
+    setTheme,
     setFontSize,
   };
 

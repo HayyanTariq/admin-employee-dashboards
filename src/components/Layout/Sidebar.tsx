@@ -50,7 +50,7 @@ const adminNavItems = [
   },
   {
     title: 'Settings',
-    href: '/admin/settings',
+    href: '/settings',
     icon: Settings,
     description: 'System settings'
   }
@@ -64,16 +64,10 @@ const employeeNavItems = [
     description: 'Your training overview'
   },
   {
-    title: 'My Trainings',
-    href: '/employee/trainings',
+    title: 'My Training',
+    href: '/employee/training',
     icon: BookOpen,
-    description: 'Your certifications'
-  },
-  {
-    title: 'Add Training',
-    href: '/employee/add-training',
-    icon: Plus,
-    description: 'Add new training'
+    description: 'Manage your trainings'
   },
   {
     title: 'My Certificates',
@@ -86,6 +80,12 @@ const employeeNavItems = [
     href: '/employee/schedule',
     icon: Calendar,
     description: 'Training schedule'
+  },
+  {
+    title: 'Settings',
+    href: '/settings',
+    icon: Settings,
+    description: 'Account settings'
   }
 ];
 
