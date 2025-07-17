@@ -36,155 +36,122 @@ export const Header = () => {
   };
 
   const getRoleIcon = (role: string) => {
-    return role === 'admin' ? <Shield className="h-3.5 w-3.5" /> : <User className="h-3.5 w-3.5" />;
+    return role === 'admin' ? <Shield className="h-4 w-4" /> : <User className="h-4 w-4" />;
   };
 
-  const getRoleBadge = (role: string) => {
+  const getRoleBadgeColor = (role: string) => {
     return role === 'admin' 
-      ? 'bg-gradient-to-r from-purple-500/90 to-purple-600/90 text-white shadow-sm' 
-      : 'bg-gradient-to-r from-blue-500/90 to-blue-600/90 text-white shadow-sm';
+      ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white' 
+      : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white';
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 max-w-screen-2xl items-center justify-between px-4 md:px-6">
-        {/* Brand Section */}
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex h-16 items-center justify-between px-4 lg:px-6 xl:px-8 max-w-none w-full">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-3">
-            <div className="relative">
-              <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg flex items-center justify-center">
-                <GraduationCap className="h-5 w-5 text-primary-foreground" />
-              </div>
-              <div className="absolute -inset-1 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 blur-sm -z-10" />
+            <div className="h-8 w-8 gradient-primary rounded-lg flex items-center justify-center">
+              <GraduationCap className="h-5 w-5 text-primary-foreground" />
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
-                Certify One
-              </h1>
-              <p className="text-xs text-muted-foreground/80 font-medium">Training Management System</p>
+              <h1 className="text-xl font-bold">Certify One</h1>
+              <p className="text-xs text-muted-foreground">Training Management</p>
             </div>
             <div className="sm:hidden">
-              <h1 className="text-lg font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
-                Certify One
-              </h1>
+              <h1 className="text-lg font-bold">Certify One</h1>
             </div>
           </div>
         </div>
 
-        {/* User Section */}
-        <div className="flex items-center space-x-3">
-          {/* User Info - Hidden on mobile */}
-          <div className="hidden lg:flex items-center space-x-4">
-            <div className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center space-x-1.5 ${getRoleBadge(user.role)}`}>
+        <div className="flex items-center space-x-2 sm:space-x-4">
+          <div className="hidden md:flex items-center space-x-3">
+            <div className={`px-3 py-1 rounded-full text-xs font-medium flex items-center space-x-1 ${getRoleBadgeColor(user.role)}`}>
               {getRoleIcon(user.role)}
-              <span className="capitalize tracking-wide">{user.role}</span>
+              <span className="capitalize">{user.role}</span>
             </div>
-            <div className="text-right space-y-0.5">
-              <p className="text-sm font-semibold text-foreground">{user.firstName} {user.lastName}</p>
-              <p className="text-xs text-muted-foreground/70 font-medium">{user.department}</p>
+            <div className="text-right">
+              <p className="text-sm font-medium">{user.firstName} {user.lastName}</p>
+              <p className="text-xs text-muted-foreground">{user.department}</p>
             </div>
           </div>
 
-          {/* User Avatar Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button 
-                variant="ghost" 
-                className="relative h-11 w-11 rounded-full border-2 border-transparent hover:border-border/50 transition-all duration-200"
-              >
-                <Avatar className="h-10 w-10 ring-2 ring-background shadow-md">
+              <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                <Avatar className="h-10 w-10">
                   <AvatarImage src={user.avatar} alt={user.firstName} />
-                  <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-semibold text-sm">
+                  <AvatarFallback className="gradient-primary text-primary-foreground">
                     {getInitials(user.firstName, user.lastName)}
                   </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent 
-              className="w-72 p-2 bg-background/95 backdrop-blur-sm border shadow-lg z-50" 
-              align="end" 
-              forceMount
-            >
-              <DropdownMenuLabel className="font-normal p-3">
-                <div className="flex flex-col space-y-3">
-                  <div className="flex items-center space-x-3">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={user.avatar} alt={user.firstName} />
-                      <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-semibold">
-                        {getInitials(user.firstName, user.lastName)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 space-y-1">
-                      <p className="text-sm font-semibold text-foreground">{user.firstName} {user.lastName}</p>
-                      <div className={`px-2 py-1 rounded-md text-xs font-semibold flex items-center space-x-1 w-fit ${getRoleBadge(user.role)}`}>
-                        {getRoleIcon(user.role)}
-                        <span className="capitalize">{user.role}</span>
-                      </div>
+            <DropdownMenuContent className="w-64" align="end" forceMount>
+              <DropdownMenuLabel className="font-normal">
+                <div className="flex flex-col space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <p className="text-sm font-medium">{user.firstName} {user.lastName}</p>
+                    <div className={`px-2 py-0.5 rounded text-xs font-medium flex items-center space-x-1 ${getRoleBadgeColor(user.role)}`}>
+                      {getRoleIcon(user.role)}
+                      <span className="capitalize">{user.role}</span>
                     </div>
                   </div>
-                  <div className="space-y-1 pt-2 border-t border-border/50">
-                    <p className="text-xs text-muted-foreground font-medium">{user.email}</p>
-                    <p className="text-xs text-muted-foreground/70">{user.department}</p>
-                  </div>
+                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                  <p className="text-xs text-muted-foreground">{user.department}</p>
                 </div>
               </DropdownMenuLabel>
+              <DropdownMenuSeparator />
               
-              <DropdownMenuSeparator className="my-2" />
-              
-              <DropdownMenuItem onClick={toggleTheme} className="cursor-pointer py-2.5 px-3">
+              <DropdownMenuItem onClick={toggleTheme} className="cursor-pointer">
                 {theme === 'light' ? (
                   <>
-                    <Moon className="mr-3 h-4 w-4" />
-                    <span className="font-medium">Dark Mode</span>
+                    <Moon className="mr-2 h-4 w-4" />
+                    <span>Dark Mode</span>
                   </>
                 ) : (
                   <>
-                    <Sun className="mr-3 h-4 w-4" />
-                    <span className="font-medium">Light Mode</span>
+                    <Sun className="mr-2 h-4 w-4" />
+                    <span>Light Mode</span>
                   </>
                 )}
               </DropdownMenuItem>
 
               <DropdownMenuSub>
-                <DropdownMenuSubTrigger className="cursor-pointer py-2.5 px-3">
-                  <Type className="mr-3 h-4 w-4" />
-                  <span className="font-medium">Font Size</span>
+                <DropdownMenuSubTrigger className="cursor-pointer">
+                  <Type className="mr-2 h-4 w-4" />
+                  <span>Font Size</span>
                 </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="p-1 bg-background/95 backdrop-blur-sm border shadow-lg z-50">
+                <DropdownMenuSubContent>
                   <DropdownMenuItem 
                     onClick={() => setFontSize('small')}
-                    className={`cursor-pointer py-2 ${fontSize === 'small' ? 'bg-accent text-accent-foreground' : ''}`}
+                    className={fontSize === 'small' ? 'bg-accent' : ''}
                   >
-                    <span className="font-medium">Small</span>
+                    Small
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     onClick={() => setFontSize('medium')}
-                    className={`cursor-pointer py-2 ${fontSize === 'medium' ? 'bg-accent text-accent-foreground' : ''}`}
+                    className={fontSize === 'medium' ? 'bg-accent' : ''}
                   >
-                    <span className="font-medium">Medium</span>
+                    Medium
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     onClick={() => setFontSize('large')}
-                    className={`cursor-pointer py-2 ${fontSize === 'large' ? 'bg-accent text-accent-foreground' : ''}`}
+                    className={fontSize === 'large' ? 'bg-accent' : ''}
                   >
-                    <span className="font-medium">Large</span>
+                    Large
                   </DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
 
-              <DropdownMenuItem className="cursor-pointer py-2.5 px-3">
-                <Settings className="mr-3 h-4 w-4" />
-                <span className="font-medium">Settings</span>
+              <DropdownMenuItem className="cursor-pointer">
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Settings</span>
               </DropdownMenuItem>
               
-              <DropdownMenuSeparator className="my-2" />
-              
-              <DropdownMenuItem 
-                onClick={logout} 
-                className="cursor-pointer text-destructive hover:text-destructive py-2.5 px-3 focus:text-destructive"
-              >
-                <LogOut className="mr-3 h-4 w-4" />
-                <span className="font-medium">Sign Out</span>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={logout} className="cursor-pointer text-destructive">
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
