@@ -10,6 +10,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { TrainingProvider } from "@/contexts/TrainingContext";
 import SplashScreen from "@/components/SplashScreen";
 import LoginPage from "@/pages/LoginPage";
+import SignupPage from "@/components/SignupPage";
 import { AppLayout } from "@/components/Layout/AppLayout";
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
 import { UserManagement } from "@/pages/admin/UserManagement";
@@ -64,6 +65,7 @@ const AppRoutes = () => (
   <Routes>
     <Route path="/" element={<SplashScreen />} />
     <Route path="/login" element={<LoginPage />} />
+    <Route path="/signup" element={<SignupPage />} />
     <Route path="/dashboard" element={<RoleBasedRedirect />} />
     <Route 
       path="/admin/dashboard" 

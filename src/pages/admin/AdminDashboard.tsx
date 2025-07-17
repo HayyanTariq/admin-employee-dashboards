@@ -20,7 +20,8 @@ import {
   Calendar,
   Eye,
   Pencil,
-  Trash2
+  Trash2,
+  GraduationCap
 } from 'lucide-react';
 import { Training, TrainingFormData } from '@/types/training';
 import {
