@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,20 +12,8 @@ export const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { user, login, isLoading, isAuthenticated } = useAuth();
+  const { login, isLoading } = useAuth();
   const { toast } = useToast();
-  const navigate = useNavigate();
-
-  // Redirect authenticated users to their dashboard
-  useEffect(() => {
-    if (isAuthenticated && user) {
-      if (user.role === 'admin') {
-        navigate('/admin/dashboard', { replace: true });
-      } else {
-        navigate('/employee/dashboard', { replace: true });
-      }
-    }
-  }, [isAuthenticated, user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +30,6 @@ export const LoginForm = () => {
         title: "Login Successful",
         description: "Welcome to Certify One!",
       });
-      // Navigation will be handled by useEffect when user state updates
     } catch (err) {
       setError('Invalid credentials. Please try again.');
       toast({
@@ -53,18 +39,6 @@ export const LoginForm = () => {
       });
     }
   };
-
-  // Show loading screen if already authenticated and redirecting
-  if (isAuthenticated && user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground">Redirecting to your dashboard...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-success/5 p-4">

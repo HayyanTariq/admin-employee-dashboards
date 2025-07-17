@@ -82,15 +82,15 @@ export const MyCourses = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="flex-1 space-y-6 p-6">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">My Courses</h1>
+          <h1 className="text-3xl font-bold tracking-tight">My Courses</h1>
           <p className="text-muted-foreground">
             Manage and track your online courses
           </p>
         </div>
-        <Button onClick={() => setIsFormOpen(true)} variant="gradient" className="w-full sm:w-auto">
+        <Button onClick={() => setIsFormOpen(true)} variant="gradient">
           <Plus className="mr-2 h-4 w-4" />
           Add Course
         </Button>
@@ -118,8 +118,8 @@ export const MyCourses = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-        <div className="relative flex-1 max-w-full sm:max-w-sm">
+      <div className="flex items-center space-x-4">
+        <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search courses..."
@@ -130,7 +130,7 @@ export const MyCourses = () => {
         </div>
         
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full sm:w-40">
+          <SelectTrigger className="w-40">
             <Filter className="mr-2 h-4 w-4" />
             <SelectValue placeholder="Status" />
           </SelectTrigger>

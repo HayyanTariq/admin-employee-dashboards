@@ -8,7 +8,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { TrainingProvider } from "@/contexts/TrainingContext";
-import { SplashScreen } from "@/pages/SplashScreen";
 import { LoginForm } from "@/components/LoginForm";
 import { AppLayout } from "@/components/Layout/AppLayout";
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
@@ -38,7 +37,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; adminOnly?: boolean 
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <LoginForm />;
   }
 
   if (adminOnly && user?.role !== 'admin') {
@@ -49,18 +48,10 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; adminOnly?: boolean 
 };
 
 const RoleBasedRedirect: React.FC = () => {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user } = useAuth();
   
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-  
-  if (!isAuthenticated || !user) {
-    return <Navigate to="/login" replace />;
+  if (!user) {
+    return <Navigate to="/" replace />;
   }
 
   return user.role === 'admin' 
@@ -70,8 +61,7 @@ const RoleBasedRedirect: React.FC = () => {
 
 const AppRoutes = () => (
   <Routes>
-    <Route path="/" element={<SplashScreen />} />
-    <Route path="/login" element={<LoginForm />} />
+    <Route path="/" element={<RoleBasedRedirect />} />
     <Route 
       path="/admin/dashboard" 
       element={
@@ -160,7 +150,6 @@ const AppRoutes = () => (
         </ProtectedRoute>
       } 
     />
-    <Route path="/dashboard" element={<RoleBasedRedirect />} />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );
