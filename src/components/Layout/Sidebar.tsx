@@ -2,6 +2,8 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { useSidebarContext } from './AppLayout';
 import {
   GraduationCap,
   Plus,
@@ -14,7 +16,9 @@ import {
   BookOpen,
   Calendar,
   User,
-  Shield
+  Shield,
+  Menu,
+  X
 } from 'lucide-react';
 
 const adminNavItems = [
@@ -80,34 +84,63 @@ const employeeNavItems = [
 export const Sidebar = () => {
   const { user } = useAuth();
   const location = useLocation();
+  const { isCollapsed, setIsCollapsed } = useSidebarContext();
 
   if (!user) return null;
 
   const navItems = user.role === 'admin' ? adminNavItems : employeeNavItems;
   const isActive = (path: string) => location.pathname === path;
 
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
   return (
-    <div className="hidden lg:flex lg:w-64 xl:w-72 lg:flex-col lg:fixed lg:inset-y-0 pt-16">
+    <div className={cn(
+      "hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 pt-16 transition-all duration-300",
+      isCollapsed ? "lg:w-16" : "lg:w-64 xl:w-72"
+    )}>
       <div className="flex flex-col flex-grow bg-card border-r overflow-y-auto">
         <div className="flex-1 px-4 xl:px-6 py-6 space-y-1">
           <div className="mb-6">
-            <div className="flex items-center space-x-3 px-3 py-2">
-              <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${
-                user.role === 'admin' 
-                  ? 'bg-gradient-to-r from-purple-500 to-purple-600' 
-                  : 'bg-gradient-to-r from-blue-500 to-blue-600'
-              }`}>
-                {user.role === 'admin' ? (
-                  <Shield className="h-4 w-4 text-white" />
-                ) : (
-                  <User className="h-4 w-4 text-white" />
-                )}
-              </div>
-              <div>
-                <p className="text-sm font-medium capitalize">{user.role} Panel</p>
-                <p className="text-xs text-muted-foreground">{user.firstName} {user.lastName}</p>
-              </div>
+            <div className={cn(
+              "flex items-center mb-4",
+              isCollapsed ? "justify-center" : "justify-between"
+            )}>
+              <Button
+                onClick={toggleSidebar}
+                variant="ghost"
+                size="sm"
+                className="p-2 hover:bg-accent/50 text-muted-foreground hover:text-foreground"
+              >
+                {isCollapsed ? <Menu className="h-4 w-4" /> : <X className="h-4 w-4" />}
+              </Button>
+              {!isCollapsed && (
+                <div className="text-xs text-muted-foreground">
+                  {user.role === 'admin' ? 'Admin' : 'Employee'}
+                </div>
+              )}
             </div>
+            
+            {!isCollapsed && (
+              <div className="flex items-center space-x-3 px-3 py-2">
+                <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${
+                  user.role === 'admin' 
+                    ? 'bg-gradient-to-r from-purple-500 to-purple-600' 
+                    : 'bg-gradient-to-r from-blue-500 to-blue-600'
+                }`}>
+                  {user.role === 'admin' ? (
+                    <Shield className="h-4 w-4 text-white" />
+                  ) : (
+                    <User className="h-4 w-4 text-white" />
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-medium capitalize">{user.role} Panel</p>
+                  <p className="text-xs text-muted-foreground">{user.firstName} {user.lastName}</p>
+                </div>
+              </div>
+            )}
           </div>
 
           <nav className="space-y-1">
@@ -118,48 +151,58 @@ export const Sidebar = () => {
                   key={item.href}
                   to={item.href}
                   className={cn(
-                    'group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200',
+                    'group flex items-center rounded-lg transition-all duration-200',
+                    isCollapsed 
+                      ? 'px-3 py-3 justify-center'
+                      : 'px-3 py-3 text-sm font-medium',
                     isActive(item.href)
-                      ? 'bg-primary text-primary-foreground shadow-soft'
+                      ? isCollapsed
+                        ? 'bg-accent/70 text-foreground'
+                        : 'bg-accent text-foreground shadow-sm'
                       : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
                   )}
                 >
                   <Icon className={cn(
-                    'mr-3 h-5 w-5 flex-shrink-0 transition-colors',
+                    'h-5 w-5 flex-shrink-0 transition-colors',
+                    isCollapsed ? 'mr-0' : 'mr-3',
                     isActive(item.href) 
-                      ? 'text-primary-foreground' 
+                      ? 'text-foreground' 
                       : 'text-muted-foreground group-hover:text-foreground'
                   )} />
-                  <div className="flex-1">
-                    <div className="font-medium">{item.title}</div>
-                    <div className={cn(
-                      'text-xs mt-0.5',
-                      isActive(item.href)
-                        ? 'text-primary-foreground/80'
-                        : 'text-muted-foreground/80 group-hover:text-foreground/80'
-                    )}>
-                      {item.description}
+                  {!isCollapsed && (
+                    <div className="flex-1">
+                      <div className="font-medium">{item.title}</div>
+                      <div className={cn(
+                        'text-xs mt-0.5',
+                        isActive(item.href)
+                          ? 'text-foreground/80'
+                          : 'text-muted-foreground/80 group-hover:text-foreground/80'
+                      )}>
+                        {item.description}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </NavLink>
               );
             })}
           </nav>
         </div>
 
-        <div className="p-4 border-t">
-          <div className="bg-gradient-to-r from-primary/10 to-success/10 rounded-lg p-4">
-            <div className="flex items-center space-x-3">
-              <div className="h-8 w-8 gradient-primary rounded-lg flex items-center justify-center">
-                <GraduationCap className="h-4 w-4 text-primary-foreground" />
-              </div>
-              <div>
-                <p className="text-sm font-medium font-serif">Certify One</p>
-                <p className="text-xs text-muted-foreground">Training Platform</p>
+        {!isCollapsed && (
+          <div className="p-4 border-t">
+            <div className="bg-gradient-to-r from-primary/10 to-success/10 rounded-lg p-4">
+              <div className="flex items-center space-x-3">
+                <div className="h-8 w-8 gradient-primary rounded-lg flex items-center justify-center">
+                  <GraduationCap className="h-4 w-4 text-primary-foreground" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium font-serif">Certify One</p>
+                  <p className="text-xs text-muted-foreground">Training Platform</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
