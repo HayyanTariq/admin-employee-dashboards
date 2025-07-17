@@ -30,10 +30,10 @@ interface TrainingListProps {
 }
 
 const statusStyles = {
-  completed: 'bg-success-light text-success border-success/20',
-  'in-progress': 'bg-primary/10 text-primary border-primary/20',
-  scheduled: 'bg-warning-light text-warning border-warning/20',
-  pending: 'bg-muted text-muted-foreground border-border'
+  completed: 'bg-success/10 text-success border-success/30 hover:bg-success/20',
+  'in-progress': 'bg-primary/10 text-primary border-primary/30 hover:bg-primary/20',
+  scheduled: 'bg-warning/10 text-warning border-warning/30 hover:bg-warning/20',
+  pending: 'bg-destructive/10 text-destructive border-destructive/30 hover:bg-destructive/20'
 };
 
 const typeIcons = {
@@ -91,112 +91,117 @@ export const TrainingList: React.FC<TrainingListProps> = ({
                 <div
                   key={training.id}
                   className={cn(
-                    'p-4 hover:bg-muted/50 transition-colors cursor-pointer',
+                    'p-6 hover:bg-muted/30 transition-all duration-200',
                     !isLast && 'border-b'
                   )}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onView?.(training);
-                  }}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4 flex-1">
-                      <Avatar className="h-10 w-10">
-                        <AvatarFallback className="gradient-primary text-primary-foreground text-xs">
-                          {getInitials(training.employeeName)}
-                        </AvatarFallback>
-                      </Avatar>
-                      
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <h4 className="text-sm font-medium truncate">
-                            {training.type === 'session' && (training as any).sessionTopic}
-                            {training.type === 'course' && (training as any).courseTitle}
-                            {training.type === 'certification' && (training as any).certificationName}
-                          </h4>
-                          <div className="flex items-center space-x-1">
-                            <TypeIcon className="h-3 w-3 text-muted-foreground" />
-                            <span className="text-xs text-muted-foreground capitalize">
-                              {training.type}
-                            </span>
-                          </div>
-                        </div>
+                  <div className="space-y-4">
+                    {/* Header Row */}
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center space-x-4 flex-1">
+                        <Avatar className="h-12 w-12 ring-2 ring-primary/10">
+                          <AvatarFallback className="gradient-primary text-primary-foreground text-sm font-medium">
+                            {getInitials(training.employeeName)}
+                          </AvatarFallback>
+                        </Avatar>
                         
-                        <div className="flex items-center space-x-4 text-xs text-muted-foreground">
-                          <div className="flex items-center space-x-1">
-                            <User className="h-3 w-3" />
-                            <span>{training.employeeName}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <h4 className="text-base font-semibold text-foreground truncate max-w-xs">
+                              {training.type === 'session' && (training as any).sessionTopic}
+                              {training.type === 'course' && (training as any).courseTitle}
+                              {training.type === 'certification' && (training as any).certificationName}
+                            </h4>
+                            <div className="flex items-center space-x-2 bg-muted/50 rounded-full px-3 py-1">
+                              <TypeIcon className="h-4 w-4 text-primary" />
+                              <span className="text-sm font-medium capitalize text-foreground">
+                                {training.type}
+                              </span>
+                            </div>
                           </div>
-                          <div className="flex items-center space-x-1">
-                            <Building className="h-3 w-3" />
-                            <span>{training.department}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <Calendar className="h-3 w-3" />
-                            <span>
-                              {training.type === 'session' && (training as any).sessionDate && formatDate((training as any).sessionDate)}
-                              {training.type === 'course' && (training as any).startDate && formatDate((training as any).startDate)}
-                              {training.type === 'certification' && (training as any).issueDate && formatDate((training as any).issueDate)}
-                            </span>
+                          
+                          <div className="flex items-center space-x-2 mb-2">
+                            <Badge 
+                              variant="outline" 
+                              className={cn(
+                                'text-sm font-medium border-2',
+                                statusStyles[training.status]
+                              )}
+                            >
+                              {training.status.replace('-', ' ')}
+                            </Badge>
+                            <span className="text-sm text-muted-foreground">•</span>
+                            <span className="text-sm font-medium text-foreground">{training.category}</span>
                           </div>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-3">
-                      <Badge 
-                        variant="secondary" 
-                        className={cn(
-                          'text-xs font-medium border',
-                          statusStyles[training.status]
-                        )}
-                      >
-                        {training.status.replace('-', ' ')}
-                      </Badge>
-                      
-                      {showActions && (
-                        <div className="flex space-x-1">
+                    {/* Details Row */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                      <div className="flex items-center space-x-2">
+                        <User className="h-4 w-4 text-primary" />
+                        <span className="font-medium text-foreground">{training.employeeName}</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Building className="h-4 w-4 text-primary" />
+                        <span className="text-muted-foreground">{training.department}</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Calendar className="h-4 w-4 text-primary" />
+                        <span className="text-muted-foreground">
+                          {training.type === 'session' && (training as any).sessionDate && formatDate((training as any).sessionDate)}
+                          {training.type === 'course' && (training as any).startDate && formatDate((training as any).startDate)}
+                          {training.type === 'certification' && (training as any).issueDate && formatDate((training as any).issueDate)}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    {/* Actions Row */}
+                    {showActions && (
+                      <div className="flex items-center justify-end space-x-2 pt-2 border-t border-border/50">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onView?.(training);
+                          }}
+                          className="h-8 px-3"
+                        >
+                          <Eye className="h-3 w-3 mr-1.5" />
+                          View
+                        </Button>
+                        {onEdit && (
                           <Button 
-                            variant="ghost" 
+                            variant="outline" 
                             size="sm"
                             onClick={(e) => {
                               e.stopPropagation();
-                              onView?.(training);
+                              onEdit(training);
                             }}
+                            className="h-8 px-3"
                           >
-                            <Eye className="h-3 w-3 mr-1" />
-                            View
+                            <Edit className="h-3 w-3 mr-1.5" />
+                            Edit
                           </Button>
-                          {onEdit && (
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                onEdit(training);
-                              }}
-                            >
-                              <Edit className="h-3 w-3 mr-1" />
-                              Edit
-                            </Button>
-                          )}
-                          {onDelete && (
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                onDelete(training);
-                              }}
-                              className="text-destructive hover:text-destructive"
-                            >
-                              <Trash2 className="h-3 w-3 mr-1" />
-                              Delete
-                            </Button>
-                          )}
-                        </div>
-                      )}
-                    </div>
+                        )}
+                        {onDelete && (
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDelete(training);
+                            }}
+                            className="h-8 px-3 text-destructive border-destructive/30 hover:bg-destructive hover:text-destructive-foreground"
+                          >
+                            <Trash2 className="h-3 w-3 mr-1.5" />
+                            Delete
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               );
