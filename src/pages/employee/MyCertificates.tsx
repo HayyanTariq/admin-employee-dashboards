@@ -81,15 +81,15 @@ export const MyCertificates = () => {
   };
 
   return (
-    <div className="flex-1 space-y-6 p-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">My Certificates</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">My Certificates</h1>
           <p className="text-muted-foreground">
             View and manage your professional certifications
           </p>
         </div>
-        <Button onClick={() => setIsFormOpen(true)} variant="gradient">
+        <Button onClick={() => setIsFormOpen(true)} variant="gradient" className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
           Add Certificate
         </Button>
@@ -117,8 +117,8 @@ export const MyCertificates = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center space-x-4">
-        <div className="relative flex-1 max-w-sm">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+        <div className="relative flex-1 max-w-full sm:max-w-sm">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search certificates..."
@@ -129,7 +129,7 @@ export const MyCertificates = () => {
         </div>
         
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-full sm:w-40">
             <Filter className="mr-2 h-4 w-4" />
             <SelectValue placeholder="Status" />
           </SelectTrigger>

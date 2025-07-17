@@ -81,15 +81,15 @@ export const MyTraining = () => {
   };
 
   return (
-    <div className="flex-1 space-y-6 p-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">My Training</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">My Training</h1>
           <p className="text-muted-foreground">
             Manage and track all your training activities
           </p>
         </div>
-        <Button onClick={() => setIsFormOpen(true)} variant="gradient">
+        <Button onClick={() => setIsFormOpen(true)} variant="gradient" className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
           Add Training
         </Button>
@@ -117,8 +117,8 @@ export const MyTraining = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center space-x-4">
-        <div className="relative flex-1 max-w-sm">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+        <div className="relative flex-1 max-w-full sm:max-w-sm">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search trainings..."
@@ -128,32 +128,34 @@ export const MyTraining = () => {
           />
         </div>
         
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-40">
-            <Filter className="mr-2 h-4 w-4" />
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="completed">Completed</SelectItem>
-            <SelectItem value="in-progress">In Progress</SelectItem>
-            <SelectItem value="scheduled">Scheduled</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-full sm:w-40">
+              <Filter className="mr-2 h-4 w-4" />
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="completed">Completed</SelectItem>
+              <SelectItem value="in-progress">In Progress</SelectItem>
+              <SelectItem value="scheduled">Scheduled</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+            </SelectContent>
+          </Select>
 
-        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            <SelectItem value="Technical">Technical</SelectItem>
-            <SelectItem value="Soft Skills">Soft Skills</SelectItem>
-            <SelectItem value="Compliance">Compliance</SelectItem>
-            <SelectItem value="Leadership">Leadership</SelectItem>
-          </SelectContent>
-        </Select>
+          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+            <SelectTrigger className="w-full sm:w-40">
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              <SelectItem value="Technical">Technical</SelectItem>
+              <SelectItem value="Soft Skills">Soft Skills</SelectItem>
+              <SelectItem value="Compliance">Compliance</SelectItem>
+              <SelectItem value="Leadership">Leadership</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Training List */}

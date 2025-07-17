@@ -39,20 +39,20 @@ export const Reports = () => {
   }, {} as Record<string, number>);
 
   return (
-    <div className="flex-1 space-y-6 p-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Training Reports</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Training Reports</h1>
           <p className="text-muted-foreground">
             Comprehensive analytics and insights for training programs
           </p>
         </div>
-        <div className="flex items-center space-x-3">
-          <Button variant="outline" size="sm">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <Button variant="outline" size="sm" className="w-full sm:w-auto">
             <Calendar className="mr-2 h-4 w-4" />
             Date Range
           </Button>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="w-full sm:w-auto">
             <Download className="mr-2 h-4 w-4" />
             Export Report
           </Button>

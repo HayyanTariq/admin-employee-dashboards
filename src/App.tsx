@@ -37,7 +37,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; adminOnly?: boolean 
   }
 
   if (!isAuthenticated) {
-    return <LoginForm />;
+    return <Navigate to="/login" replace />;
   }
 
   if (adminOnly && user?.role !== 'admin') {
@@ -48,10 +48,18 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; adminOnly?: boolean 
 };
 
 const RoleBasedRedirect: React.FC = () => {
-  const { user } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   
-  if (!user) {
-    return <Navigate to="/" replace />;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+  
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" replace />;
   }
 
   return user.role === 'admin' 
@@ -61,6 +69,7 @@ const RoleBasedRedirect: React.FC = () => {
 
 const AppRoutes = () => (
   <Routes>
+    <Route path="/login" element={<LoginForm />} />
     <Route path="/" element={<RoleBasedRedirect />} />
     <Route 
       path="/admin/dashboard" 
