@@ -4,16 +4,27 @@ export interface User {
   id: string;
   username: string;
   email: string;
-  role: 'admin' | 'employee';
+  role: 'owner' | 'admin' | 'employee';
   firstName: string;
   lastName: string;
   department?: string;
+  companyName?: string;
   avatar?: string;
+}
+
+export interface SignupData {
+  username: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  companyName: string;
 }
 
 interface AuthContextType {
   user: User | null;
   login: (username: string, password: string) => Promise<void>;
+  signupOwner: (signupData: SignupData) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
   isAuthenticated: boolean;
@@ -99,16 +110,52 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsLoading(false);
     }
   };
+const signupOwner = async (signupData: SignupData) => {
+  setIsLoading(true);
+  try {
+    // TODO: Replace with actual API call to your ASP.NET backend for owner signup
+    // const response = await fetch('/api/auth/signup-owner', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(signupData)
+    // });
 
-  const logout = () => {
-    localStorage.removeItem('auth-token');
-    localStorage.removeItem('user-data');
-    setUser(null);
-  };
+    // Mock signup for demo - replace with real API
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
+
+    // Mock user data for owner
+    const mockOwnerUser: User = {
+      id: '3',
+      username: signupData.username,
+      email: signupData.email,
+      role: 'owner',
+      firstName: signupData.firstName,
+      lastName: signupData.lastName,
+      companyName: signupData.companyName,
+    };
+
+    // Store token and user data
+    const mockToken = 'mock-jwt-token-owner-' + Date.now();
+    localStorage.setItem('auth-token', mockToken);
+    localStorage.setItem('user-data', JSON.stringify(mockOwnerUser));
+    setUser(mockOwnerUser);
+  } catch (error) {
+    throw error;
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+const logout = () => {
+  localStorage.removeItem('auth-token');
+  localStorage.removeItem('user-data');
+  setUser(null);
+};
 
   const value = {
     user,
     login,
+    signupOwner,
     logout,
     isLoading,
     isAuthenticated: !!user,

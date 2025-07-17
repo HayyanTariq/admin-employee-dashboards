@@ -5,11 +5,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, User, Lock, GraduationCap } from 'lucide-react';
+import { Loader2, Mail, Lock, GraduationCap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Link } from 'react-router-dom';
 
 export const LoginForm = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { login, isLoading } = useAuth();
@@ -19,13 +20,18 @@ export const LoginForm = () => {
     e.preventDefault();
     setError('');
 
-    if (!username || !password) {
-      setError('Please enter both username and password');
+    if (!email || !password) {
+      setError('Please enter both email and password');
+      return;
+    }
+
+    if (!email.endsWith('@gmail.com')) {
+      setError('Please use a Gmail address (@gmail.com)');
       return;
     }
 
     try {
-      await login(username, password);
+      await login(email, password);
       toast({
         title: "Login Successful",
         description: "Welcome to Certify One!",
@@ -62,17 +68,17 @@ export const LoginForm = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="username" className="text-sm font-medium">
-                    Username
+                  <Label htmlFor="email" className="text-sm font-medium">
+                    Email
                   </Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
-                      id="username"
-                      type="text"
-                      placeholder="Enter your username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      id="email"
+                      type="email"
+                      placeholder="Enter your Gmail address"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       className="pl-10"
                       disabled={isLoading}
                     />
@@ -126,10 +132,13 @@ export const LoginForm = () => {
               <div className="text-sm text-muted-foreground space-y-2">
                 <p className="font-medium">Demo Credentials:</p>
                 <div className="space-y-1 text-xs">
-                  <p><strong>Admin:</strong> username: admin, password: admin</p>
-                  <p><strong>Employee:</strong> username: employee, password: employee</p>
+                  <p><strong>Admin:</strong> email: admin@gmail.com, password: admin</p>
+                  <p><strong>Employee:</strong> email: employee@gmail.com, password: employee</p>
                 </div>
               </div>
+            </div>
+            <div className="mt-6 text-center">
+              <p className="text-sm">Don't have an account? <Link to="/signup" className="text-primary font-medium">Sign up</Link></p>
             </div>
           </CardContent>
         </Card>
