@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTraining } from '@/contexts/TrainingContext';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { StatsCard } from '@/components/Dashboard/StatsCard';
@@ -18,7 +19,8 @@ import {
   CheckCircle,
   Eye,
   Pencil,
-  Trash2
+  Trash2,
+  GraduationCap
 } from 'lucide-react';
 import { Training, TrainingFormData } from '@/types/training';
 import {
@@ -180,6 +182,7 @@ const TrainingList: React.FC<TrainingListProps> = ({
 export const EmployeeDashboard = () => {
   const { user } = useAuth();
   const { trainings, addTraining, updateTraining, deleteTraining } = useTraining();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTraining, setEditingTraining] = useState<Training | null>(null);
@@ -389,13 +392,29 @@ export const EmployeeDashboard = () => {
               <Plus className="mr-2 h-4 w-4" />
               Add New Training
             </Button>
-            <Button variant="outline" className="w-full justify-start">
+            <Button 
+              variant="outline" 
+              className="w-full justify-start"
+              onClick={() => navigate('/employee/certificates')}
+            >
               <Award className="mr-2 h-4 w-4" />
               View My Certificates
             </Button>
-            <Button variant="outline" className="w-full justify-start">
+            <Button 
+              variant="outline" 
+              className="w-full justify-start"
+              onClick={() => navigate('/employee/courses')}
+            >
+              <GraduationCap className="mr-2 h-4 w-4" />
+              View My Courses
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full justify-start"
+              onClick={() => navigate('/employee/sessions')}
+            >
               <Calendar className="mr-2 h-4 w-4" />
-              My Schedule
+              My Sessions
             </Button>
           </div>
         </div>
