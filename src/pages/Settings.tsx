@@ -134,6 +134,9 @@ export const Settings = () => {
                   type="email"
                   value={profileData.email}
                   onChange={(e) => setProfileData({...profileData, email: e.target.value})}
+                  readOnly={user?.role === 'employee'}
+                  disabled={user?.role === 'employee'}
+                  className={user?.role === 'employee' ? 'bg-muted cursor-not-allowed' : ''}
                 />
               </div>
               
@@ -152,6 +155,9 @@ export const Settings = () => {
                     id="department"
                     value={profileData.department}
                     onChange={(e) => setProfileData({...profileData, department: e.target.value})}
+                    readOnly={user?.role === 'employee'}
+                    disabled={user?.role === 'employee'}
+                    className={user?.role === 'employee' ? 'bg-muted cursor-not-allowed' : ''}
                   />
                 </div>
               </div>
@@ -368,12 +374,16 @@ export const Settings = () => {
                 Reset Preferences
               </Button>
               
-              <Separator />
-              
-              <Button variant="destructive" className="w-full justify-start">
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete Account
-              </Button>
+              {user?.role === 'admin' && (
+                <>
+                  <Separator />
+                  
+                  <Button variant="destructive" className="w-full justify-start">
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete Account
+                  </Button>
+                </>
+              )}
             </CardContent>
           </Card>
 

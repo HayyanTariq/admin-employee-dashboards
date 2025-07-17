@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { StatsCard } from '@/components/Dashboard/StatsCard';
 import { TrainingFormSlideout } from '@/components/TrainingForm/TrainingFormSlideout';
 import { TrainingViewModal } from '@/components/Training/TrainingViewModal';
+import { RecentTrainingActivities } from '@/components/Admin/RecentTrainingActivities';
 import { 
   Users, 
   Award, 
@@ -382,10 +383,10 @@ export const AdminDashboard = () => {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <TrainingList
+        <RecentTrainingActivities
           trainings={trainings}
           title="Recent Training Activities"
-          limit={5}
+          limit={4}
           onView={setViewingTraining}
           onEdit={handleEditTraining}
           onDelete={handleDeleteTraining}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
@@ -28,6 +29,7 @@ import {
 export const Header = () => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme, fontSize, setFontSize } = useTheme();
+  const navigate = useNavigate();
 
   if (!user) return null;
 
@@ -143,7 +145,7 @@ export const Header = () => {
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
 
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
                 <Settings className="mr-2 h-4 w-4" />
                 <span>Settings</span>
               </DropdownMenuItem>

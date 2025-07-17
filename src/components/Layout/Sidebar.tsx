@@ -41,12 +41,6 @@ const adminNavItems = [
     href: '/admin/reports',
     icon: FileText,
     description: 'Training reports'
-  },
-  {
-    title: 'Settings',
-    href: '/settings',
-    icon: Settings,
-    description: 'System settings'
   }
 ];
 
@@ -80,18 +74,6 @@ const employeeNavItems = [
     href: '/employee/certificates',
     icon: Award,
     description: 'View certificates'
-  },
-  {
-    title: 'Schedule',
-    href: '/employee/schedule',
-    icon: Calendar,
-    description: 'Training schedule'
-  },
-  {
-    title: 'Settings',
-    href: '/settings',
-    icon: Settings,
-    description: 'Account settings'
   }
 ];
 
