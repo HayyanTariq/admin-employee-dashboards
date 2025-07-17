@@ -100,7 +100,11 @@ export const Header = () => {
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-72 p-2" align="end" forceMount>
+            <DropdownMenuContent 
+              className="w-72 p-2 bg-background/95 backdrop-blur-sm border shadow-lg z-50" 
+              align="end" 
+              forceMount
+            >
               <DropdownMenuLabel className="font-normal p-3">
                 <div className="flex flex-col space-y-3">
                   <div className="flex items-center space-x-3">
@@ -146,7 +150,7 @@ export const Header = () => {
                   <Type className="mr-3 h-4 w-4" />
                   <span className="font-medium">Font Size</span>
                 </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="p-1">
+                <DropdownMenuSubContent className="p-1 bg-background/95 backdrop-blur-sm border shadow-lg z-50">
                   <DropdownMenuItem 
                     onClick={() => setFontSize('small')}
                     className={`cursor-pointer py-2 ${fontSize === 'small' ? 'bg-accent text-accent-foreground' : ''}`}
