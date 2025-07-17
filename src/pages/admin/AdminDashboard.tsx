@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { StatsCard } from '@/components/Dashboard/StatsCard';
 import { TrainingList } from '@/components/Dashboard/TrainingList';
 import { TrainingFormSlideout } from '@/components/TrainingForm/TrainingFormSlideout';
+import { TrainingViewModal } from '@/components/Training/TrainingViewModal';
 import { 
   Users, 
   Award, 
@@ -17,6 +17,7 @@ import {
   Calendar
 } from 'lucide-react';
 import { Training, TrainingFormData } from '@/types/training';
+import { useToast } from '@/hooks/use-toast';
 
 // Mock data for demonstration
 const mockTrainings: Training[] = [
@@ -81,14 +82,18 @@ const mockTrainings: Training[] = [
 export const AdminDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingTraining, setEditingTraining] = useState<Training | null>(null);
+  const [viewingTraining, setViewingTraining] = useState<Training | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [trainings, setTrainings] = useState<Training[]>(mockTrainings);
 
   const stats = {
-    totalEmployees: 125,
-    totalTrainings: mockTrainings.length,
-    completedTrainings: mockTrainings.filter(t => t.status === 'completed').length,
-    inProgressTrainings: mockTrainings.filter(t => t.status === 'in-progress').length,
+    totalEmployees: 142,
+    totalTrainings: trainings.length,
+    completedTrainings: trainings.filter(t => t.status === 'completed').length,
+    inProgressTrainings: trainings.filter(t => t.status === 'in-progress').length,
   };
 
   const handleAddTraining = async (data: TrainingFormData) => {
@@ -96,11 +101,72 @@ export const AdminDashboard = () => {
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('New training data:', data);
-      // In real app, this would make an API call to your ASP.NET backend
+      
+      const newTraining: Training = {
+        ...data,
+        id: Date.now().toString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      } as Training;
+      
+      if (editingTraining) {
+        setTrainings(prev => prev.map(t => t.id === editingTraining.id ? { ...newTraining, id: editingTraining.id } : t));
+        toast({
+          title: "Training Updated",
+          description: "Training has been successfully updated.",
+        });
+        setEditingTraining(null);
+      } else {
+        setTrainings(prev => [newTraining, ...prev]);
+        toast({
+          title: "Training Added",
+          description: "New training has been successfully added.",
+        });
+      }
+      setIsFormOpen(false);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save training. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleEditTraining = (training: Training) => {
+    setEditingTraining(training);
+    setIsFormOpen(true);
+  };
+
+  const handleDeleteTraining = async (training: Training) => {
+    if (window.confirm(`Are you sure you want to delete this ${training.type}?`)) {
+      try {
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 500));
+        setTrainings(prev => prev.filter(t => t.id !== training.id));
+        toast({
+          title: "Training Deleted",
+          description: "Training has been successfully deleted.",
+        });
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to delete training. Please try again.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  const handleViewTraining = (training: Training) => {
+    setViewingTraining(training);
+  };
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setEditingTraining(null);
   };
 
   return (
@@ -165,12 +231,12 @@ export const AdminDashboard = () => {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <TrainingList
-          trainings={mockTrainings}
+          trainings={trainings}
           title="Recent Training Activities"
           limit={5}
-          onView={(training) => console.log('View training:', training)}
-          onEdit={(training) => console.log('Edit training:', training)}
-          onDelete={(training) => console.log('Delete training:', training)}
+          onView={handleViewTraining}
+          onEdit={handleEditTraining}
+          onDelete={handleDeleteTraining}
         />
         
         <div className="space-y-6">
@@ -217,9 +283,24 @@ export const AdminDashboard = () => {
 
       <TrainingFormSlideout
         isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
+        onClose={handleCloseForm}
         onSubmit={handleAddTraining}
         isLoading={isLoading}
+        initialData={editingTraining ? {
+          employeeName: editingTraining.employeeName,
+          role: editingTraining.role,
+          department: editingTraining.department,
+          category: editingTraining.category,
+          status: editingTraining.status,
+          type: editingTraining.type,
+          ...editingTraining
+        } : undefined}
+      />
+      
+      <TrainingViewModal
+        training={viewingTraining}
+        isOpen={!!viewingTraining}
+        onClose={() => setViewingTraining(null)}
       />
     </div>
   );
