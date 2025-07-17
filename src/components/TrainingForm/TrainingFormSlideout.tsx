@@ -113,15 +113,56 @@ export const TrainingFormSlideout: React.FC<TrainingFormSlideoutProps> = ({
 
   const { toast } = useToast();
 
+  // Reset form function
+  const resetForm = () => {
+    setFormData({
+      employeeName: '',
+      role: '',
+      department: '',
+      category: '',
+      status: 'pending',
+      type: fixedType || 'session',
+      skillsLearned: [],
+    });
+    setSkills([]);
+    setNewSkill('');
+    setStartDate(undefined);
+    setCompletionDate(undefined);
+    setSessionDate(undefined);
+    setIssueDate(undefined);
+    setExpirationDate(undefined);
+  };
+
   useEffect(() => {
     if (initialData) {
       setFormData({ ...formData, ...initialData });
       setSkills(initialData.skillsLearned || []);
+      // Set date states from initial data
+      setStartDate(initialData.startDate ? new Date(initialData.startDate) : undefined);
+      setCompletionDate(initialData.completionDate ? new Date(initialData.completionDate) : undefined);
+      setSessionDate(initialData.sessionDate ? new Date(initialData.sessionDate) : undefined);
+      setIssueDate(initialData.issueDate ? new Date(initialData.issueDate) : undefined);
+      setExpirationDate(initialData.expirationDate ? new Date(initialData.expirationDate) : undefined);
+    } else {
+      resetForm();
     }
     if (fixedType) {
       setFormData(prev => ({ ...prev, type: fixedType }));
     }
   }, [initialData, fixedType]);
+
+  // Reset form when dialog is closed
+  useEffect(() => {
+    if (!isOpen) {
+      // Add a small delay to ensure the form is reset after the dialog is closed
+      const timer = setTimeout(() => {
+        if (!initialData) {
+          resetForm();
+        }
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, initialData]);
 
   const updateFormData = (field: keyof TrainingFormData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -182,15 +223,17 @@ export const TrainingFormSlideout: React.FC<TrainingFormSlideoutProps> = ({
     try {
       await onSubmit(finalData);
       toast({
-        title: "Training Added Successfully",
-        description: `${formData.type} training has been added to the system.`,
+        title: initialData ? "Training Updated Successfully" : "Training Added Successfully",
+        description: `${formData.type} training has been ${initialData ? 'updated' : 'added'} ${initialData ? 'successfully' : 'to the system'}.`,
         variant: "default",
       });
+      // Reset form state
+      resetForm();
       onClose();
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to save training. Please try again.",
+        description: `Failed to ${initialData ? 'update' : 'save'} training. Please try again.`,
         variant: "destructive",
       });
     }

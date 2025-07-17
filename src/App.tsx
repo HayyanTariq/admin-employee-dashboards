@@ -8,7 +8,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { TrainingProvider } from "@/contexts/TrainingContext";
-import { LoginForm } from "@/components/LoginForm";
+import SplashScreen from "@/components/SplashScreen";
+import LoginPage from "@/pages/LoginPage";
 import { AppLayout } from "@/components/Layout/AppLayout";
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
 import { UserManagement } from "@/pages/admin/UserManagement";
@@ -37,7 +38,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; adminOnly?: boolean 
   }
 
   if (!isAuthenticated) {
-    return <LoginForm />;
+    return <Navigate to="/login" replace />;
   }
 
   if (adminOnly && user?.role !== 'admin') {
@@ -48,20 +49,22 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; adminOnly?: boolean 
 };
 
 const RoleBasedRedirect: React.FC = () => {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   
-  if (!user) {
-    return <Navigate to="/" replace />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
   }
 
-  return user.role === 'admin' 
+  return user?.role === 'admin' 
     ? <Navigate to="/admin/dashboard" replace />
     : <Navigate to="/employee/dashboard" replace />;
 };
 
 const AppRoutes = () => (
   <Routes>
-    <Route path="/" element={<RoleBasedRedirect />} />
+    <Route path="/" element={<SplashScreen />} />
+    <Route path="/login" element={<LoginPage />} />
+    <Route path="/dashboard" element={<RoleBasedRedirect />} />
     <Route 
       path="/admin/dashboard" 
       element={
