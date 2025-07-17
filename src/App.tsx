@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { TrainingProvider } from "@/contexts/TrainingContext";
+import { SplashScreen } from "@/pages/SplashScreen";
 import { LoginForm } from "@/components/LoginForm";
 import { AppLayout } from "@/components/Layout/AppLayout";
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
@@ -69,8 +70,8 @@ const RoleBasedRedirect: React.FC = () => {
 
 const AppRoutes = () => (
   <Routes>
+    <Route path="/" element={<SplashScreen />} />
     <Route path="/login" element={<LoginForm />} />
-    <Route path="/" element={<RoleBasedRedirect />} />
     <Route 
       path="/admin/dashboard" 
       element={
@@ -159,6 +160,7 @@ const AppRoutes = () => (
         </ProtectedRoute>
       } 
     />
+    <Route path="/dashboard" element={<RoleBasedRedirect />} />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );
